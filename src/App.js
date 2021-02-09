@@ -1,57 +1,43 @@
 import React from 'react';
-
+import axios from 'axios';
 
 class App extends React.Component{
 
-  constructor(props){
+  state = {
+    isLoading: true,
+    movies: [],
+  }
 
-    super(props);
-    console.log("hello ")
+  getMovies = async () => {
+    //const movies = await axios.get('https://yts-proxy.now.sh/list_movies.json');
+    // console.log(movies);
+    // console.log(movies.data.data.movies);
+
+    //구조 분해 할당
+    const {
+      data: {
+        data: {movies},
+      }, 
+    } = await axios.get('https://yts-proxy.now.sh/list_movies.json');
+
+    this.setState({movies: movies, isLoading: false}); //ES6에서 객체의 키와 대입할 변수의 이름이 같으면 코드 축약 가능 {movies}
+
   }
 
   componentDidMount(){
-    console.log('component rendered');
-  }
+    // setTimeout(() => {
+    //   this.setState({isLoading: false});
+    // }, 6000);
+    this.getMovies();
 
-  componentDidUpdate(){
-    console.log('updated');
-  }
-
-  componentWillUnmount(){
-    console.log("goodBye world");
-  }
-
-  state = {
-    count: 0,
-  };
-
-  add = () => {
-    //console.log('add');
-    //this.setState({count: this.state.count + 1}); 
-    //setState()함수의 인자로 함수를 전달하면 성능 문제 없이 업데이트 가능
-
-    this.setState(current => ({
-      count: current.count + 1
-    }))
-
-  }
-
-  minus = () => {
-    //this.setState({count: this.state.count - 1});
-    this.setState(current => ({
-      count: current.count - 1
-    }))
   }
 
   render(){
-    console.log("render.....");
-    return (
-      <div>
-        <h1>The number is: {this.state.count}</h1>
-          <button onClick={this.add}>Add</button>
-          <button onClick={this.minus}>Minus</button>
-    </div>
-      );
+
+    const {isLoading} = this.state;
+    
+    return <div>{isLoading ? 'Loading...' : 'We are ready'}</div>;
+
   }
 }
 
